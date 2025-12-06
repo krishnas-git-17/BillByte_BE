@@ -2705,11 +2705,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\krishna\\source\\repos\\Billbyte_BE\\Billbyte_BE\\Billbyte_BE.csproj",
+      "projectUniqueName": "D:\\BillByte\\BillByte_BackEnd\\Billbyte_BE\\Billbyte_BE.csproj",
       "projectName": "Billbyte_BE",
-      "projectPath": "C:\\Users\\krishna\\source\\repos\\Billbyte_BE\\Billbyte_BE\\Billbyte_BE.csproj",
+      "projectPath": "D:\\BillByte\\BillByte_BackEnd\\Billbyte_BE\\Billbyte_BE.csproj",
       "packagesPath": "C:\\Users\\krishna\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\krishna\\source\\repos\\Billbyte_BE\\Billbyte_BE\\obj\\",
+      "outputPath": "D:\\BillByte\\BillByte_BackEnd\\Billbyte_BE\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
