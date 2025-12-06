@@ -1,0 +1,6 @@
+@Billbyte_BE_HostAddress = http://localhost:5195
+
+GET {{Billbyte_BE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
