@@ -13,27 +13,28 @@ namespace BillByte.Repository
             _conn = cfg.GetConnectionString("DBConn");
         }
 
+        // ---------------------- GET ALL ----------------------
         public async Task<List<MenuItem>> GetAllAsync()
         {
             var list = new List<MenuItem>();
 
             using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"SELECT * FROM ""MenuItems"" ORDER BY ""ItemName""", con);
+            using var cmd = new NpgsqlCommand(@"SELECT * FROM ""MenuItems"" ORDER BY ""Name""", con);
 
             await con.OpenAsync();
             using var dr = await cmd.ExecuteReaderAsync();
+
             while (await dr.ReadAsync())
-            {
                 list.Add(Map(dr));
-            }
 
             return list;
         }
 
-        public async Task<MenuItem?> GetByIdAsync(int id)
+        // ---------------------- GET BY ID ----------------------
+        public async Task<MenuItem?> GetByIdAsync(string id)
         {
             using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"SELECT * FROM ""MenuItems"" WHERE ""ItemId""=@id", con);
+            using var cmd = new NpgsqlCommand(@"SELECT * FROM ""MenuItems"" WHERE ""MenuId""=@id", con);
 
             cmd.Parameters.AddWithValue("@id", id);
 
@@ -43,49 +44,57 @@ namespace BillByte.Repository
             return await dr.ReadAsync() ? Map(dr) : null;
         }
 
+        // ---------------------- ADD ----------------------
         public async Task<MenuItem> AddAsync(MenuItem item)
         {
             using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"
-                INSERT INTO ""MenuItems"" 
-                (""ItemName"", ""FoodTypeId"", ""ItemCost"",
-                 ""GSTPercentage"", ""CGSTPercentage"", ""ImageUrl"",
-                 ""CreatedBy"", ""CreatedDate"")
-                VALUES 
-                (@name, @type, @cost, @gst, @cgst, @img, @createdBy, @date)
-                RETURNING ""ItemId"";", con);
 
-            cmd.Parameters.AddWithValue("@name", item.ItemName);
-            cmd.Parameters.AddWithValue("@type", item.FoodTypeId);
-            cmd.Parameters.AddWithValue("@cost", item.ItemCost);
-            cmd.Parameters.AddWithValue("@gst", (object?)item.GSTPercentage ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@cgst", (object?)item.CGSTPercentage ?? DBNull.Value);
+            using var cmd = new NpgsqlCommand(@"
+                INSERT INTO ""MenuItems""
+                (""MenuId"", ""Name"", ""Type"", ""VegType"", ""Status"", ""Price"", ""ImageUrl"", ""CreatedBy"", ""CreatedDate"")
+                VALUES
+                (@id, @name, @type, @veg, @status, @price, @img, @createdBy, @date);
+            ", con);
+
+            // values
+            cmd.Parameters.AddWithValue("@id", item.MenuId);
+            cmd.Parameters.AddWithValue("@name", item.Name);
+            cmd.Parameters.AddWithValue("@type", item.Type);
+            cmd.Parameters.AddWithValue("@veg", item.VegType);
+            cmd.Parameters.AddWithValue("@status", item.Status);
+            cmd.Parameters.AddWithValue("@price", item.Price);
             cmd.Parameters.AddWithValue("@img", (object?)item.ImageUrl ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@createdBy", item.CreatedBy ?? "System");
-            cmd.Parameters.AddWithValue("@date", DateTime.UtcNow);
+            cmd.Parameters.AddWithValue("@date", item.CreatedDate);
 
             await con.OpenAsync();
-            item.ItemId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            await cmd.ExecuteNonQueryAsync();
 
             return item;
         }
 
+        // ---------------------- UPDATE ----------------------
         public async Task<MenuItem> UpdateAsync(MenuItem item)
         {
             using var con = new NpgsqlConnection(_conn);
 
             using var cmd = new NpgsqlCommand(@"
                 UPDATE ""MenuItems""
-                SET ""ItemName""=@name, ""FoodTypeId""=@type, ""ItemCost""=@cost,
-                    ""GSTPercentage""=@gst, ""CGSTPercentage""=@cgst, ""ImageUrl""=@img
-                WHERE ""ItemId""=@id", con);
+                SET ""Name""=@name,
+                    ""Type""=@type,
+                    ""VegType""=@veg,
+                    ""Status""=@status,
+                    ""Price""=@price,
+                    ""ImageUrl""=@img
+                WHERE ""MenuId""=@id
+            ", con);
 
-            cmd.Parameters.AddWithValue("@id", item.ItemId);
-            cmd.Parameters.AddWithValue("@name", item.ItemName);
-            cmd.Parameters.AddWithValue("@type", item.FoodTypeId);
-            cmd.Parameters.AddWithValue("@cost", item.ItemCost);
-            cmd.Parameters.AddWithValue("@gst", (object?)item.GSTPercentage ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@cgst", (object?)item.CGSTPercentage ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@id", item.MenuId);
+            cmd.Parameters.AddWithValue("@name", item.Name);
+            cmd.Parameters.AddWithValue("@type", item.Type);
+            cmd.Parameters.AddWithValue("@veg", item.VegType);
+            cmd.Parameters.AddWithValue("@status", item.Status);
+            cmd.Parameters.AddWithValue("@price", item.Price);
             cmd.Parameters.AddWithValue("@img", (object?)item.ImageUrl ?? DBNull.Value);
 
             await con.OpenAsync();
@@ -94,10 +103,11 @@ namespace BillByte.Repository
             return item;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        // ---------------------- DELETE ----------------------
+        public async Task<bool> DeleteAsync(string id)
         {
             using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"DELETE FROM ""MenuItems"" WHERE ""ItemId""=@id", con);
+            using var cmd = new NpgsqlCommand(@"DELETE FROM ""MenuItems"" WHERE ""MenuId""=@id", con);
 
             cmd.Parameters.AddWithValue("@id", id);
 
@@ -105,36 +115,17 @@ namespace BillByte.Repository
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        public async Task<List<MenuItem>> GetByFoodTypeAsync(int typeId)
-        {
-            var list = new List<MenuItem>();
-
-            using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"SELECT * FROM ""MenuItems"" WHERE ""FoodTypeId""=@t", con);
-
-            cmd.Parameters.AddWithValue("@t", typeId);
-
-            await con.OpenAsync();
-            using var dr = await cmd.ExecuteReaderAsync();
-            while (await dr.ReadAsync())
-            {
-                list.Add(Map(dr));
-            }
-
-            return list;
-        }
-
-        // Helper mapper
+        // ---------------------- MAPPER ----------------------
         private MenuItem Map(NpgsqlDataReader dr)
         {
             return new MenuItem
             {
-                ItemId = dr.GetInt32(dr.GetOrdinal("ItemId")),
-                ItemName = dr["ItemName"].ToString(),
-                FoodTypeId = dr.GetInt32(dr.GetOrdinal("FoodTypeId")),
-                ItemCost = dr.GetDecimal(dr.GetOrdinal("ItemCost")),
-                GSTPercentage = dr["GSTPercentage"] == DBNull.Value ? null : dr.GetDecimal(dr.GetOrdinal("GSTPercentage")),
-                CGSTPercentage = dr["CGSTPercentage"] == DBNull.Value ? null : dr.GetDecimal(dr.GetOrdinal("CGSTPercentage")),
+                MenuId = dr["MenuId"].ToString(),
+                Name = dr["Name"].ToString(),
+                Type = dr["Type"].ToString(),
+                VegType = dr["VegType"].ToString(),
+                Status = dr["Status"].ToString(),
+                Price = dr.GetDecimal(dr.GetOrdinal("Price")),
                 ImageUrl = dr["ImageUrl"]?.ToString(),
                 CreatedBy = dr["CreatedBy"]?.ToString(),
                 CreatedDate = dr.GetDateTime(dr.GetOrdinal("CreatedDate"))

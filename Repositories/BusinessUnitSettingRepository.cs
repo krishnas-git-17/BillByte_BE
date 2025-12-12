@@ -30,6 +30,8 @@ namespace Billbyte_BE.Repositories
             }
 
             settings.IsTableServeNeeded = dto.IsTableServeNeeded;
+            settings.Key = dto.Key;
+            settings.Value = dto.Value;
             settings.NonAcTables = dto.NonAcTables;
             settings.AcTables = dto.AcTables;
             settings.UpdatedAt = DateTime.UtcNow;

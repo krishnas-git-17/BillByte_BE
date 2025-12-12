@@ -2,14 +2,14 @@
 {
     public class MenuItem
     {
-        public int ItemId { get; set; }
-        public string ItemName { get; set; }
-        public int FoodTypeId { get; set; }
-        public decimal ItemCost { get; set; }
-        public decimal? GSTPercentage { get; set; }
-        public decimal? CGSTPercentage { get; set; }
+        public string MenuId { get; set; }  
+        public string Name { get; set; } 
+        public string Type { get; set; }    
+        public string VegType { get; set; }
+        public string Status { get; set; }
+        public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
     }
 }

@@ -6,6 +6,8 @@ using Billbyte_BE.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 
 // PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -15,12 +17,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IFoodTypeRepository, FoodTypeRepository>();
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 builder.Services.AddScoped<IBusinessUnitSettingRepository, BusinessUnitSettingRepository>();
+builder.Services.AddScoped<IMenuItemImagesRepository, MenuItemImageRepository>();
+
 
 
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
 
 var app = builder.Build();
 
@@ -31,6 +46,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+app.UseCors("_myAllowSpecificOrigins");
 app.UseSwagger();
 app.UseSwaggerUI();
 

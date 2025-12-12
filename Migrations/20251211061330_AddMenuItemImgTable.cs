@@ -7,27 +7,24 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Billbyte_BE.Migrations
 {
     /// <inheritdoc />
-    public partial class BusinessUnitSettings : Migration
+    public partial class AddMenuItemImgTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "BusinessUnitSettings",
+                name: "MenuItemImgs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IsTableServeNeeded = table.Column<bool>(type: "boolean", nullable: false),
-                    Key = table.Column<int>(type: "integer", nullable: true),
-                    Value = table.Column<string>(type: "string", nullable: true),
-                    NonAcTables = table.Column<int>(type: "integer", nullable: false),
-                    AcTables = table.Column<int>(type: "integer", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ItemName = table.Column<string>(type: "text", nullable: false),
+                    Base64Image = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BusinessUnitSettings", x => x.Id);
+                    table.PrimaryKey("PK_MenuItemImgs", x => x.Id);
                 });
         }
 
@@ -35,7 +32,7 @@ namespace Billbyte_BE.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BusinessUnitSettings");
+                name: "MenuItemImgs");
         }
     }
 }

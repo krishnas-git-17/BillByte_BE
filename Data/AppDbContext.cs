@@ -14,6 +14,8 @@ namespace Billbyte_BE.Data
         public DbSet<MenuItem> MenuItems { get; set; }
         public DbSet<FoodType> FoodTypes { get; set; }
         public DbSet<BusinessUnitSetting> BusinessUnitSettings { get; set; }
+        public DbSet<MenuItemImgs> menuItemImgs { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,12 +25,16 @@ namespace Billbyte_BE.Data
             // MenuItems Table Mapping
             modelBuilder.Entity<MenuItem>()
                 .ToTable("MenuItems")
-                .HasKey(x => x.ItemId);
+                .HasKey(x => x.MenuId);
 
             // Food Type Mapping
             modelBuilder.Entity<FoodType>()
                 .ToTable("FoodTypes")
                 .HasKey(x => x.FoodTypeId);
+
+            modelBuilder.Entity<MenuItemImgs>()
+        .ToTable("MenuItemImgs")
+        .HasKey(x => x.Id);
         }
     }
 }

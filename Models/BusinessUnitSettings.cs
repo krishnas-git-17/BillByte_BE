@@ -7,6 +7,9 @@ namespace BillByte.Model
         [Key]
         public int Id { get; set; }
 
+        public int Key { get; set; }
+        public string Value { get; set; }
+
         public bool IsTableServeNeeded { get; set; }
         public int NonAcTables { get; set; }
         public int AcTables { get; set; }

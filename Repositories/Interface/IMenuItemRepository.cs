@@ -5,10 +5,9 @@ namespace BillByte.Interface
     public interface IMenuItemRepository
     {
         Task<List<MenuItem>> GetAllAsync();
-        Task<MenuItem?> GetByIdAsync(int id);
+        Task<MenuItem?> GetByIdAsync(string id);
         Task<MenuItem> AddAsync(MenuItem item);
         Task<MenuItem> UpdateAsync(MenuItem item);
-        Task<bool> DeleteAsync(int id);
-        Task<List<MenuItem>> GetByFoodTypeAsync(int typeId);
+        Task<bool> DeleteAsync(string id);
     }
 }

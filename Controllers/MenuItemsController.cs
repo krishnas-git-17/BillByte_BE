@@ -15,36 +15,44 @@ namespace BillByte.Controllers
             _repo = repo;
         }
 
+        // -------------------------------- GET ALL --------------------------------
         [HttpGet]
-        public async Task<IActionResult> Get() => Ok(await _repo.GetAllAsync());
+        public async Task<IActionResult> Get()
+            => Ok(await _repo.GetAllAsync());
 
+        // -------------------------------- GET BY ID --------------------------------
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id) => Ok(await _repo.GetByIdAsync(id));
+        public async Task<IActionResult> Get(string id)
+        {
+            var item = await _repo.GetByIdAsync(id);
+            if (item == null) return NotFound("Menu item not found");
 
+            return Ok(item);
+        }
+
+        // -------------------------------- CREATE --------------------------------
         [HttpPost]
-        public async Task<IActionResult> Create(MenuItem item)
+        public async Task<IActionResult> Create([FromBody] MenuItem item)
         {
             var created = await _repo.AddAsync(item);
             return Ok(created);
         }
 
+        // -------------------------------- UPDATE --------------------------------
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, MenuItem item)
+        public async Task<IActionResult> Update(string id, [FromBody] MenuItem item)
         {
-            item.ItemId = id;
-            return Ok(await _repo.UpdateAsync(item));
+            item.MenuId = id;
+            var updated = await _repo.UpdateAsync(item);
+            return Ok(updated);
         }
 
+        // -------------------------------- DELETE --------------------------------
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            return Ok(await _repo.DeleteAsync(id));
-        }
-
-        [HttpGet("foodtype/{typeId}")]
-        public async Task<IActionResult> GetByFoodType(int typeId)
-        {
-            return Ok(await _repo.GetByFoodTypeAsync(typeId));
+            bool deleted = await _repo.DeleteAsync(id);
+            return Ok(new { deleted });
         }
     }
 }
