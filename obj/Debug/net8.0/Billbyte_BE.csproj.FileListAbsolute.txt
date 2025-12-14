@@ -226,4 +226,3 @@ D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\refint\Billbyte_BE.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.pdb
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.genruntimeconfig.cache
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\ref\Billbyte_BE.dll
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
