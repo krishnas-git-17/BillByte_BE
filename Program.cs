@@ -6,47 +6,45 @@ using Billbyte_BE.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
 
 // PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DBConn")));
 
-// Register Repos
+// Repositories
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 builder.Services.AddScoped<IMenuItemImagesRepository, MenuItemImageRepository>();
 builder.Services.AddScoped<ICompletedOrderRepository, CompletedOrderRepository>();
 
-
-
-
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+/* ? CORS – SINGLE WORKING POLICY */
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
 var app = builder.Build();
 
-// Auto apply migrations
+/* ? Auto Migrate */
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
-app.UseCors("_myAllowSpecificOrigins");
+/* ? ORDER MATTERS */
+app.UseCors("AllowAll");
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
