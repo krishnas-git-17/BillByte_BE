@@ -14,10 +14,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DBConn")));
 
 // Register Repos
-builder.Services.AddScoped<IFoodTypeRepository, FoodTypeRepository>();
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
-builder.Services.AddScoped<IBusinessUnitSettingRepository, BusinessUnitSettingRepository>();
 builder.Services.AddScoped<IMenuItemImagesRepository, MenuItemImageRepository>();
+builder.Services.AddScoped<ICompletedOrderRepository, CompletedOrderRepository>();
+
 
 
 

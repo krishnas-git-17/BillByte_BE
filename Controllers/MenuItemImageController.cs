@@ -1,64 +1,60 @@
-﻿using BillByte.Model;
-using Billbyte_BE.Data;
+﻿using BillByte.Interface;
+using BillByte.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/menu-item-images")]
 public class MenuItemImageController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IMenuItemImagesRepository _repo;
 
-    public MenuItemImageController(AppDbContext context)
+    public MenuItemImageController(IMenuItemImagesRepository repo)
     {
-        _context = context;
+        _repo = repo;
     }
 
-    // -------------------- POST: Add Image --------------------
+    // POST
     [HttpPost]
-    public async Task<IActionResult> AddImage([FromBody] MenuItemImgs img)
+    public async Task<IActionResult> Add(MenuItemImgs img)
     {
-        if (img == null || string.IsNullOrEmpty(img.ItemImage))
-            return BadRequest("Invalid image object.");
+        if (string.IsNullOrWhiteSpace(img.ItemImage))
+            return BadRequest("Image is required");
 
-        _context.menuItemImgs.Add(img);
-        await _context.SaveChangesAsync();
-
-        return Ok(img);
+        var result = await _repo.AddAsync(img);
+        return Ok(result);
     }
 
-    // -------------------- GET ALL --------------------
+    // GET ALL
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var data = await _context.menuItemImgs.ToListAsync();
-        return Ok(data);
+        return Ok(await _repo.GetAllAsync());
     }
 
-    // -------------------- GET BY ID --------------------
+    // GET BY ID
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> Get(int id)
     {
-        var img = await _context.menuItemImgs.FindAsync(id);
-
-        if (img == null)
-            return NotFound("Image not found.");
-
-        return Ok(img);
+        var data = await _repo.GetByIdAsync(id);
+        return data == null ? NotFound() : Ok(data);
     }
 
-    // -------------------- DELETE --------------------
+    // PUT
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, MenuItemImgs img)
+    {
+        if (id != img.Id)
+            return BadRequest("ID mismatch");
+
+        var updated = await _repo.UpdateAsync(img);
+        return Ok(updated);
+    }
+
+    // DELETE
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var img = await _context.menuItemImgs.FindAsync(id);
-
-        if (img == null)
-            return NotFound("Image not found.");
-
-        _context.menuItemImgs.Remove(img);
-        await _context.SaveChangesAsync();
-
-        return Ok("Deleted successfully.");
+        var success = await _repo.DeleteAsync(id);
+        return success ? Ok("Deleted") : NotFound();
     }
 }

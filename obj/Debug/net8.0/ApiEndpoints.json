@@ -1,113 +1,34 @@
 [
   {
-    "ContainingType": "BillByte.Controllers.BusinessUnitSettingsController",
-    "Method": "GetSettings",
-    "RelativePath": "api/BusinessUnitSettings",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "BillByte.Controllers.BusinessUnitSettingsController",
-    "Method": "UpdateSettings",
-    "RelativePath": "api/BusinessUnitSettings",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "UpdateBusinessUnitSettingDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Billbyte_BE.Controllers.FoodTypesController",
-    "Method": "GetAll",
-    "RelativePath": "api/FoodTypes",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Billbyte_BE.Controllers.FoodTypesController",
-    "Method": "Create",
-    "RelativePath": "api/FoodTypes",
+    "ContainingType": "CompletedOrdersController",
+    "Method": "SaveOrder",
+    "RelativePath": "api/completed-orders",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "type",
-        "Type": "Billbyte_BE.Models.FoodType",
+        "Name": "order",
+        "Type": "BillByte.Model.CompletedOrder",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Billbyte_BE.Controllers.FoodTypesController",
-    "Method": "Get",
-    "RelativePath": "api/FoodTypes/{id}",
+    "ContainingType": "CompletedOrdersController",
+    "Method": "TodayOrders",
+    "RelativePath": "api/completed-orders/today",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Billbyte_BE.Controllers.FoodTypesController",
-    "Method": "Update",
-    "RelativePath": "api/FoodTypes/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "type",
-        "Type": "Billbyte_BE.Models.FoodType",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Billbyte_BE.Controllers.FoodTypesController",
-    "Method": "Delete",
-    "RelativePath": "api/FoodTypes/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
     "ContainingType": "MenuItemImageController",
-    "Method": "AddImage",
-    "RelativePath": "api/MenuItemImage",
+    "Method": "Add",
+    "RelativePath": "api/menu-item-images",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -123,7 +44,7 @@
   {
     "ContainingType": "MenuItemImageController",
     "Method": "GetAll",
-    "RelativePath": "api/MenuItemImage",
+    "RelativePath": "api/menu-item-images",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -132,8 +53,8 @@
   },
   {
     "ContainingType": "MenuItemImageController",
-    "Method": "GetById",
-    "RelativePath": "api/MenuItemImage/{id}",
+    "Method": "Get",
+    "RelativePath": "api/menu-item-images/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -148,8 +69,29 @@
   },
   {
     "ContainingType": "MenuItemImageController",
+    "Method": "Update",
+    "RelativePath": "api/menu-item-images/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "img",
+        "Type": "BillByte.Model.MenuItemImgs",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MenuItemImageController",
     "Method": "Delete",
-    "RelativePath": "api/MenuItemImage/{id}",
+    "RelativePath": "api/menu-item-images/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -240,26 +182,5 @@
       }
     ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Billbyte_BE.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Billbyte_BE.WeatherForecast, Billbyte_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "EndpointName": "GetWeatherForecast"
   }
 ]

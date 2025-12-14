@@ -3,6 +3,7 @@ using System;
 using Billbyte_BE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Billbyte_BE.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251213114236_AddCompletedOrders")]
+    partial class AddCompletedOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,38 @@ namespace Billbyte_BE.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BillByte.Model.BusinessUnitSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AcTables")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsTableServeNeeded")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Key")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NonAcTables")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BusinessUnitSettings");
+                });
 
             modelBuilder.Entity("BillByte.Model.CompletedOrder", b =>
                 {
@@ -47,12 +82,18 @@ namespace Billbyte_BE.Migrations
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("numeric");
 
+                    b.Property<int>("TableDurationMinutes")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("TableEndTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("TableId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TableTimeMinutes")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("TableStartTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Tax")
                         .HasColumnType("numeric");
@@ -63,34 +104,6 @@ namespace Billbyte_BE.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CompletedOrders", (string)null);
-                });
-
-            modelBuilder.Entity("BillByte.Model.CompletedOrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompletedOrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Qty")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompletedOrderId");
-
-                    b.ToTable("CompletedOrderItems", (string)null);
                 });
 
             modelBuilder.Entity("BillByte.Model.MenuItem", b =>
@@ -155,18 +168,24 @@ namespace Billbyte_BE.Migrations
                     b.ToTable("MenuItemImgs", (string)null);
                 });
 
-            modelBuilder.Entity("BillByte.Model.CompletedOrderItem", b =>
+            modelBuilder.Entity("Billbyte_BE.Models.FoodType", b =>
                 {
-                    b.HasOne("BillByte.Model.CompletedOrder", null)
-                        .WithMany("Items")
-                        .HasForeignKey("CompletedOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.Property<int>("FoodTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-            modelBuilder.Entity("BillByte.Model.CompletedOrder", b =>
-                {
-                    b.Navigation("Items");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FoodTypeId"));
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FoodTypeName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("FoodTypeId");
+
+                    b.ToTable("FoodTypes", (string)null);
                 });
 #pragma warning restore 612, 618
         }

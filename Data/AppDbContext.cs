@@ -1,5 +1,4 @@
 ﻿using BillByte.Model;
-using Billbyte_BE.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Billbyte_BE.Data
@@ -12,9 +11,9 @@ namespace Billbyte_BE.Data
         }
 
         public DbSet<MenuItem> MenuItems { get; set; }
-        public DbSet<FoodType> FoodTypes { get; set; }
-        public DbSet<BusinessUnitSetting> BusinessUnitSettings { get; set; }
         public DbSet<MenuItemImgs> menuItemImgs { get; set; }
+        public DbSet<CompletedOrder> CompletedOrders { get; set; }
+        public DbSet<CompletedOrderItem> CompletedOrderItems { get; set; }
 
 
 
@@ -22,19 +21,21 @@ namespace Billbyte_BE.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // MenuItems Table Mapping
             modelBuilder.Entity<MenuItem>()
                 .ToTable("MenuItems")
                 .HasKey(x => x.MenuId);
-
-            // Food Type Mapping
-            modelBuilder.Entity<FoodType>()
-                .ToTable("FoodTypes")
-                .HasKey(x => x.FoodTypeId);
-
             modelBuilder.Entity<MenuItemImgs>()
         .ToTable("MenuItemImgs")
         .HasKey(x => x.Id);
+
+            modelBuilder.Entity<CompletedOrderItem>()
+       .ToTable("CompletedOrderItems")
+       .HasKey(x => x.Id);
+
+
+            modelBuilder.Entity<CompletedOrder>()                    
+                .ToTable("CompletedOrders")
+                .HasKey(x => x.Id);
         }
     }
 }

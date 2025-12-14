@@ -5,77 +5,26 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/BusinessUnitSettings": {
-      "get": {
-        "tags": [
-          "BusinessUnitSettings"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "BusinessUnitSettings"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBusinessUnitSettingDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBusinessUnitSettingDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBusinessUnitSettingDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/FoodTypes": {
-      "get": {
-        "tags": [
-          "FoodTypes"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
+    "/api/completed-orders": {
       "post": {
         "tags": [
-          "FoodTypes"
+          "CompletedOrders"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FoodType"
+                "$ref": "#/components/schemas/CompletedOrder"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/FoodType"
+                "$ref": "#/components/schemas/CompletedOrder"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/FoodType"
+                "$ref": "#/components/schemas/CompletedOrder"
               }
             }
           }
@@ -87,82 +36,10 @@
         }
       }
     },
-    "/api/FoodTypes/{id}": {
+    "/api/completed-orders/today": {
       "get": {
         "tags": [
-          "FoodTypes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "FoodTypes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FoodType"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FoodType"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FoodType"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "FoodTypes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
+          "CompletedOrders"
         ],
         "responses": {
           "200": {
@@ -171,7 +48,7 @@
         }
       }
     },
-    "/api/MenuItemImage": {
+    "/api/menu-item-images": {
       "post": {
         "tags": [
           "MenuItemImage"
@@ -212,7 +89,7 @@
         }
       }
     },
-    "/api/MenuItemImage/{id}": {
+    "/api/menu-item-images/{id}": {
       "get": {
         "tags": [
           "MenuItemImage"
@@ -228,6 +105,46 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "MenuItemImage"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuItemImgs"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuItemImgs"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuItemImgs"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -377,64 +294,83 @@
           }
         }
       }
-    },
-    "/WeatherForecast": {
-      "get": {
-        "tags": [
-          "WeatherForecast"
-        ],
-        "operationId": "GetWeatherForecast",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
     "schemas": {
-      "FoodType": {
-        "required": [
-          "foodTypeName"
-        ],
+      "CompletedOrder": {
         "type": "object",
         "properties": {
-          "foodTypeId": {
+          "id": {
             "type": "integer",
             "format": "int32"
           },
-          "foodTypeName": {
-            "minLength": 1,
-            "type": "string"
+          "tableId": {
+            "type": "string",
+            "nullable": true
           },
-          "displayOrder": {
+          "orderType": {
+            "type": "string",
+            "nullable": true
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "tax": {
+            "type": "number",
+            "format": "double"
+          },
+          "discount": {
+            "type": "number",
+            "format": "double"
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentMode": {
+            "type": "string",
+            "nullable": true
+          },
+          "tableTimeMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompletedOrderItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompletedOrderItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedOrderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemName": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "qty": {
             "type": "integer",
             "format": "int32"
           }
@@ -501,54 +437,6 @@
           "createdDate": {
             "type": "string",
             "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdateBusinessUnitSettingDto": {
-        "type": "object",
-        "properties": {
-          "isTableServeNeeded": {
-            "type": "boolean"
-          },
-          "key": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "value": {
-            "type": "string",
-            "nullable": true
-          },
-          "nonAcTables": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "acTables": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "WeatherForecast": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
