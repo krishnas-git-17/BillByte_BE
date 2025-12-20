@@ -1,4 +1,5 @@
 ﻿using BillByte.Model;
+using Billbyte_BE.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Billbyte_BE.Data
@@ -10,32 +11,39 @@ namespace Billbyte_BE.Data
         {
         }
 
-        public DbSet<MenuItem> MenuItems { get; set; }
-        public DbSet<MenuItemImgs> menuItemImgs { get; set; }
-        public DbSet<CompletedOrder> CompletedOrders { get; set; }
-        public DbSet<CompletedOrderItem> CompletedOrderItems { get; set; }
+        // ❌ REMOVE legacy DbSets
+        // public DbSet<MenuItem> MenuItems { get; set; }
+        // public DbSet<MenuItemImgs> MenuItemImgs { get; set; }
+        // public DbSet<CompletedOrder> CompletedOrders { get; set; }
+        // public DbSet<CompletedOrderItem> CompletedOrderItems { get; set; }
 
-
+        // ✅ ONLY NEW TABLE
+        public DbSet<TablePreference> TablePreferences { get; set; }
+        public DbSet<TableState> TableStates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<MenuItem>()
-                .ToTable("MenuItems")
-                .HasKey(x => x.MenuId);
-            modelBuilder.Entity<MenuItemImgs>()
-        .ToTable("MenuItemImgs")
-        .HasKey(x => x.Id);
+            // 🚫 IGNORE legacy entities completely
+            modelBuilder.Ignore<MenuItem>();
+            modelBuilder.Ignore<MenuItemImgs>();
+            modelBuilder.Ignore<CompletedOrder>();
+            modelBuilder.Ignore<CompletedOrderItem>();
+            //modelBuilder.Ignore<TableState>();
 
-            modelBuilder.Entity<CompletedOrderItem>()
-       .ToTable("CompletedOrderItems")
-       .HasKey(x => x.Id);
+            modelBuilder.Entity<TablePreference>(e =>
+            {
+                e.ToTable("TablePreferences");
+                e.HasKey(x => x.Id);
+            });
+            modelBuilder.Entity<TableState>(e =>
+            {
+                e.ToTable("TableStates");
+                e.HasKey(x => x.Id);
+            });
 
 
-            modelBuilder.Entity<CompletedOrder>()                    
-                .ToTable("CompletedOrders")
-                .HasKey(x => x.Id);
         }
     }
 }

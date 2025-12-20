@@ -17,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 builder.Services.AddScoped<IMenuItemImagesRepository, MenuItemImageRepository>();
 builder.Services.AddScoped<ICompletedOrderRepository, CompletedOrderRepository>();
+builder.Services.AddScoped<ITablePreferenceRepository, TablePreferenceRepository>();
+builder.Services.AddScoped<ITableStateRepository, TableStateRepository>();
 
 
 

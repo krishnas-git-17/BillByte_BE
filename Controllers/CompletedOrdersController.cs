@@ -20,9 +20,9 @@ public class CompletedOrdersController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("today")]
-    public async Task<IActionResult> TodayOrders()
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-        return Ok(await _repo.GetTodayOrdersAsync());
+        return Ok(await _repo.GetAllAsync());
     }
 }

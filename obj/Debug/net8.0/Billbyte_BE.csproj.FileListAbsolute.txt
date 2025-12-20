@@ -112,6 +112,15 @@ C:\Users\krishna\source\repos\Billbyte_BE\Billbyte_BE\bin\Debug\net8.0\tr\Micros
 C:\Users\krishna\source\repos\Billbyte_BE\Billbyte_BE\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\krishna\source\repos\Billbyte_BE\Billbyte_BE\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\krishna\source\repos\Billbyte_BE\Billbyte_BE\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.csproj.AssemblyReference.cache
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.GeneratedMSBuildEditorConfig.editorconfig
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.AssemblyInfoInputs.cache
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.AssemblyInfo.cs
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.csproj.CoreCompileInputs.cache
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.MvcApplicationPartsAssemblyInfo.cs
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.MvcApplicationPartsAssemblyInfo.cache
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.sourcelink.json
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\appsettings.Development.json
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\appsettings.json
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Billbyte_BE.staticwebassets.runtime.json
@@ -203,15 +212,6 @@ D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\ru\Microsoft.CodeAnaly
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.csproj.AssemblyReference.cache
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\rpswa.dswa.cache.json
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.GeneratedMSBuildEditorConfig.editorconfig
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.AssemblyInfoInputs.cache
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.AssemblyInfo.cs
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.csproj.CoreCompileInputs.cache
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.MvcApplicationPartsAssemblyInfo.cs
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.MvcApplicationPartsAssemblyInfo.cache
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.sourcelink.json
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\rjimswa.dswa.cache.json
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -226,3 +226,4 @@ D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\refint\Billbyte_BE.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.pdb
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.genruntimeconfig.cache
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\ref\Billbyte_BE.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
