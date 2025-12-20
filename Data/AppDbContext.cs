@@ -30,7 +30,7 @@ namespace Billbyte_BE.Data
             modelBuilder.Ignore<MenuItemImgs>();
             modelBuilder.Ignore<CompletedOrder>();
             modelBuilder.Ignore<CompletedOrderItem>();
-            //modelBuilder.Ignore<TableState>();
+           //modelBuilder.Ignore<TableState>();
 
             modelBuilder.Entity<TablePreference>(e =>
             {
