@@ -62,5 +62,12 @@ namespace Billbyte_BE.Controllers
             await _repository.DeleteAllAsync();
             return Ok(new { message = "All table preferences deleted" });
         }
+
+        //[HttpGet("generate-hash")]
+        //public IActionResult GenerateHash()
+        //{
+        //    var hash = BCrypt.Net.BCrypt.HashPassword("Krishna@123");
+        //    return Ok(hash);
+        //}
     }
 }

@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "BillByte.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "BillByte.DTO.LoginRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CompletedOrdersController",
     "Method": "SaveOrder",
     "RelativePath": "api/completed-orders",

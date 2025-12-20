@@ -1,9 +1,14 @@
 using BillByte.Interface;
+using BillByte.Repositories;
+using BillByte.Repositories.Interface;
 using BillByte.Repository;
 using Billbyte_BE.Data;
 using Billbyte_BE.Repositories;
 using Billbyte_BE.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -19,6 +24,7 @@ builder.Services.AddScoped<IMenuItemImagesRepository, MenuItemImageRepository>()
 builder.Services.AddScoped<ICompletedOrderRepository, CompletedOrderRepository>();
 builder.Services.AddScoped<ITablePreferenceRepository, TablePreferenceRepository>();
 builder.Services.AddScoped<ITableStateRepository, TableStateRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 
@@ -37,6 +43,22 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod()
                   .AllowCredentials();
         });
+});
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+        )
+    };
 });
 
 var app = builder.Build();

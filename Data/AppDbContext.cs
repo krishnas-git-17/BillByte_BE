@@ -1,4 +1,5 @@
 ﻿using BillByte.Model;
+using BillByte.Models;
 using Billbyte_BE.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,8 @@ namespace Billbyte_BE.Data
         // ✅ ONLY NEW TABLE
         public DbSet<TablePreference> TablePreferences { get; set; }
         public DbSet<TableState> TableStates { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
