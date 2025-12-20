@@ -226,4 +226,13 @@ D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\refint\Billbyte_BE.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.pdb
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.genruntimeconfig.cache
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\ref\Billbyte_BE.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\BCrypt.Net-Next.dll
