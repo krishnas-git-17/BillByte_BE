@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Billbyte_BE.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/sidebar")]
     public class SidebarController : ControllerBase
     {

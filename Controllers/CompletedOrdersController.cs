@@ -1,8 +1,10 @@
 ﻿using BillByte.Model;
 using Billbyte_BE.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
+[Authorize]
 [Route("api/completed-orders")]
 public class CompletedOrdersController : ControllerBase
 {

@@ -1,8 +1,10 @@
 ﻿using BillByte.Interface;
 using BillByte.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
+[Authorize]
 [Route("api/menu-item-images")]
 public class MenuItemImageController : ControllerBase
 {

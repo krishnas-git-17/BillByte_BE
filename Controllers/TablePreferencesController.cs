@@ -1,11 +1,13 @@
 ﻿using BillByte.Interface;
 using Billbyte_BE.Models;
 using Billbyte_BE.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billbyte_BE.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/table-preferences")]
     public class TablePreferencesController : ControllerBase
     {

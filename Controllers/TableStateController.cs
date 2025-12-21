@@ -1,11 +1,13 @@
 ﻿using Billbyte_BE.Data;
 using Billbyte_BE.Models;
 using Billbyte_BE.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billbyte_BE.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/table-state")]
     public class TableStateController : ControllerBase
     {

@@ -1,10 +1,12 @@
 ﻿using BillByte.Interface;
 using BillByte.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BillByte.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class MenuItemsController : ControllerBase
     {
