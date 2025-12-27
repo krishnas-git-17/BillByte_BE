@@ -24,14 +24,15 @@ namespace Billbyte_BE.Repositories
             {
                 using var cmd = new NpgsqlCommand(@"
                     INSERT INTO ""CompletedOrders""
-                    (""TableId"", ""OrderType"", ""Subtotal"", ""Tax"", ""Discount"",
-                     ""Total"", ""PaymentMode"", ""TableTimeMinutes"", ""CreatedDate"")
+                    (""RestaurantId"", ""TableId"", ""OrderType"", ""Subtotal"", ""Tax"",
+                     ""Discount"", ""Total"", ""PaymentMode"", ""TableTimeMinutes"", ""CreatedDate"")
                     VALUES
-                    (@tableId, @type, @subtotal, @tax, @discount,
-                     @total, @payment, @time, @date)
+                    (@rid, @tableId, @type, @subtotal, @tax,
+                     @discount, @total, @payment, @time, @date)
                     RETURNING ""Id"";
                 ", con, tx);
 
+                cmd.Parameters.AddWithValue("@rid", order.RestaurantId);
                 cmd.Parameters.AddWithValue("@tableId", order.TableId);
                 cmd.Parameters.AddWithValue("@type", order.OrderType);
                 cmd.Parameters.AddWithValue("@subtotal", order.Subtotal);
@@ -69,107 +70,116 @@ namespace Billbyte_BE.Repositories
             }
         }
 
-        public async Task<List<CompletedOrder>> GetAllAsync()
+        public async Task<List<CompletedOrder>> GetAllAsync(int restaurantId)
         {
             var orders = new List<CompletedOrder>();
 
             using var con = new NpgsqlConnection(_conn);
             await con.OpenAsync();
 
-            // 1️⃣ Load Orders
-            using (var cmd = new NpgsqlCommand(@"SELECT * FROM ""CompletedOrders"" ORDER BY ""CreatedDate"" DESC", con))
-            using (var dr = await cmd.ExecuteReaderAsync())
+            using (var cmd = new NpgsqlCommand(@"
+                SELECT * FROM ""CompletedOrders""
+                WHERE ""RestaurantId""=@rid
+                ORDER BY ""CreatedDate"" DESC
+            ", con))
             {
+                cmd.Parameters.AddWithValue("@rid", restaurantId);
+
+                using var dr = await cmd.ExecuteReaderAsync();
                 while (await dr.ReadAsync())
                 {
-                    orders.Add(new CompletedOrder
-                    {
-                        Id = dr.GetInt32(dr.GetOrdinal("Id")),
-                        TableId = dr["TableId"].ToString(),
-                        OrderType = dr["OrderType"].ToString(),
-                        Subtotal = dr.GetDecimal(dr.GetOrdinal("Subtotal")),
-                        Tax = dr.GetDecimal(dr.GetOrdinal("Tax")),
-                        Discount = dr.GetDecimal(dr.GetOrdinal("Discount")),
-                        Total = dr.GetDecimal(dr.GetOrdinal("Total")),
-                        PaymentMode = dr["PaymentMode"].ToString(),
-                        TableTimeMinutes = dr.GetInt32(dr.GetOrdinal("TableTimeMinutes")),
-                        CreatedDate = dr.GetDateTime(dr.GetOrdinal("CreatedDate")),
-                        Items = new List<CompletedOrderItem>()
-                    });
+                    orders.Add(MapOrder(dr));
                 }
             }
 
             if (!orders.Any())
                 return orders;
 
-            // 2️⃣ Load Items
-            var orderIds = string.Join(",", orders.Select(o => o.Id));
-
-            using var itemCmd = new NpgsqlCommand($@"
-        SELECT * FROM ""CompletedOrderItems""
-        WHERE ""CompletedOrderId"" IN ({orderIds})
-    ", con);
-
-            using var itemDr = await itemCmd.ExecuteReaderAsync();
-
-            var lookup = orders.ToDictionary(o => o.Id);
-
-            while (await itemDr.ReadAsync())
-            {
-                var item = new CompletedOrderItem
-                {
-                    Id = itemDr.GetInt32(itemDr.GetOrdinal("Id")),
-                    CompletedOrderId = itemDr.GetInt32(itemDr.GetOrdinal("CompletedOrderId")),
-                    ItemName = itemDr["ItemName"].ToString(),
-                    Price = itemDr.GetDecimal(itemDr.GetOrdinal("Price")),
-                    Qty = itemDr.GetInt32(itemDr.GetOrdinal("Qty"))
-                };
-
-                lookup[item.CompletedOrderId].Items.Add(item);
-            }
-
+            await LoadItemsAsync(con, orders);
             return orders;
         }
 
-
-        public async Task<List<CompletedOrder>> GetOrdersByDateRangeAsync(DateTime from, DateTime to)
+        public async Task<List<CompletedOrder>> GetOrdersByDateRangeAsync(
+            int restaurantId,
+            DateTime from,
+            DateTime to)
         {
-            var list = new List<CompletedOrder>();
+            var orders = new List<CompletedOrder>();
 
             using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"
-        SELECT * FROM ""CompletedOrders""
-        WHERE ""CreatedDate"" >= @from
-          AND ""CreatedDate"" <= @to
-        ORDER BY ""CreatedDate"" DESC
-    ", con);
-
-            cmd.Parameters.AddWithValue("@from", from);
-            cmd.Parameters.AddWithValue("@to", to);
-
             await con.OpenAsync();
+
+            using (var cmd = new NpgsqlCommand(@"
+                SELECT * FROM ""CompletedOrders""
+                WHERE ""RestaurantId""=@rid
+                  AND ""CreatedDate"" BETWEEN @from AND @to
+                ORDER BY ""CreatedDate"" DESC
+            ", con))
+            {
+                cmd.Parameters.AddWithValue("@rid", restaurantId);
+                cmd.Parameters.AddWithValue("@from", from);
+                cmd.Parameters.AddWithValue("@to", to);
+
+                using var dr = await cmd.ExecuteReaderAsync();
+                while (await dr.ReadAsync())
+                {
+                    orders.Add(MapOrder(dr));
+                }
+            }
+
+            if (!orders.Any())
+                return orders;
+
+            await LoadItemsAsync(con, orders);
+            return orders;
+        }
+
+        private async Task LoadItemsAsync(
+            NpgsqlConnection con,
+            List<CompletedOrder> orders)
+        {
+            var orderIds = string.Join(",", orders.Select(o => o.Id));
+            var lookup = orders.ToDictionary(o => o.Id);
+
+            using var cmd = new NpgsqlCommand($@"
+                SELECT * FROM ""CompletedOrderItems""
+                WHERE ""CompletedOrderId"" IN ({orderIds})
+            ", con);
+
             using var dr = await cmd.ExecuteReaderAsync();
 
             while (await dr.ReadAsync())
             {
-                list.Add(new CompletedOrder
+                var item = new CompletedOrderItem
                 {
                     Id = dr.GetInt32(dr.GetOrdinal("Id")),
-                    TableId = dr["TableId"].ToString(),
-                    OrderType = dr["OrderType"].ToString(),
-                    Subtotal = dr.GetDecimal(dr.GetOrdinal("Subtotal")),
-                    Tax = dr.GetDecimal(dr.GetOrdinal("Tax")),
-                    Discount = dr.GetDecimal(dr.GetOrdinal("Discount")),
-                    Total = dr.GetDecimal(dr.GetOrdinal("Total")),
-                    PaymentMode = dr["PaymentMode"].ToString(),
-                    TableTimeMinutes = dr.GetInt32(dr.GetOrdinal("TableTimeMinutes")),
-                    CreatedDate = dr.GetDateTime(dr.GetOrdinal("CreatedDate")),
-                    Items = new List<CompletedOrderItem>()
-                });
-            }
+                    CompletedOrderId = dr.GetInt32(dr.GetOrdinal("CompletedOrderId")),
+                    ItemName = dr["ItemName"].ToString(),
+                    Price = dr.GetDecimal(dr.GetOrdinal("Price")),
+                    Qty = dr.GetInt32(dr.GetOrdinal("Qty"))
+                };
 
-            return list;
+                lookup[item.CompletedOrderId].Items.Add(item);
+            }
         }
 
+        private CompletedOrder MapOrder(NpgsqlDataReader dr)
+        {
+            return new CompletedOrder
+            {
+                Id = dr.GetInt32(dr.GetOrdinal("Id")),
+                RestaurantId = dr.GetInt32(dr.GetOrdinal("RestaurantId")),
+                TableId = dr["TableId"].ToString(),
+                OrderType = dr["OrderType"].ToString(),
+                Subtotal = dr.GetDecimal(dr.GetOrdinal("Subtotal")),
+                Tax = dr.GetDecimal(dr.GetOrdinal("Tax")),
+                Discount = dr.GetDecimal(dr.GetOrdinal("Discount")),
+                Total = dr.GetDecimal(dr.GetOrdinal("Total")),
+                PaymentMode = dr["PaymentMode"].ToString(),
+                TableTimeMinutes = dr.GetInt32(dr.GetOrdinal("TableTimeMinutes")),
+                CreatedDate = dr.GetDateTime(dr.GetOrdinal("CreatedDate")),
+                Items = new List<CompletedOrderItem>()
+            };
+        }
     }
 }

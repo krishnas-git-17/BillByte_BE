@@ -1,5 +1,4 @@
-﻿using Billbyte_BE.Data;
-using Billbyte_BE.Models;
+﻿using Billbyte_BE.Helpers;
 using Billbyte_BE.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,30 +18,40 @@ namespace Billbyte_BE.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _repo.GetAllAsync());
+            var restaurantId = User.RestaurantId();
+            return Ok(await _repo.GetAllAsync(restaurantId));
         }
 
-        [HttpPost("start/{tableId}")]
-        public async Task<IActionResult> Start(string tableId)
+        [HttpPost("occupied/{tableId}")]
+        public async Task<IActionResult> SetOccupied(string tableId)
         {
-            await _repo.StartTimerAsync(tableId);
+            var restaurantId = User.RestaurantId();
+            await _repo.SetOccupiedAsync(tableId, restaurantId);
             return Ok();
         }
 
-        [HttpPost("stop/{tableId}")]
-        public async Task<IActionResult> Stop(string tableId)
+        [HttpPost("ordered/{tableId}")]
+        public async Task<IActionResult> MoveToOrdered(string tableId)
         {
-            await _repo.StopTimerAsync(tableId);
-            return Ok();
+            var restaurantId = User.RestaurantId();
+            var success = await _repo.MoveToOrderedAsync(tableId, restaurantId);
+            return success ? Ok() : BadRequest();
         }
 
-        [HttpPost("status")]
-        public async Task<IActionResult> SetStatus([FromBody] TableState payload)
+        [HttpPost("billing/{tableId}")]
+        public async Task<IActionResult> MoveToBilling(string tableId)
         {
-            await _repo.SetStatusAsync(payload.TableId, payload.Status);
+            var restaurantId = User.RestaurantId();
+            var success = await _repo.MoveToBillingAsync(tableId, restaurantId);
+            return success ? Ok() : BadRequest();
+        }
+
+        [HttpPost("reset/{tableId}")]
+        public async Task<IActionResult> Reset(string tableId)
+        {
+            var restaurantId = User.RestaurantId();
+            await _repo.ResetAsync(tableId, restaurantId);
             return Ok();
         }
     }
-
-
 }

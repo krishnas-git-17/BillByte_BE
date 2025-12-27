@@ -1,4 +1,5 @@
-﻿using BillByte.Model;
+﻿using Billbyte_BE.Helpers;
+using BillByte.Model;
 using Billbyte_BE.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ public class CompletedOrdersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SaveOrder([FromBody] CompletedOrder order)
     {
+        order.RestaurantId = User.RestaurantId();
         await _repo.AddOrderAsync(order);
         return Ok();
     }
@@ -23,6 +25,7 @@ public class CompletedOrdersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _repo.GetAllAsync());
+        var restaurantId = User.RestaurantId();
+        return Ok(await _repo.GetAllAsync(restaurantId));
     }
 }

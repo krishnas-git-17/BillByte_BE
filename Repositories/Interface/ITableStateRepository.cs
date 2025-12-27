@@ -4,15 +4,12 @@ namespace Billbyte_BE.Repositories.Interface
 {
     public interface ITableStateRepository
     {
-        Task<TableState?> GetByTableIdAsync(string tableId);
-        Task<List<TableState>> GetAllAsync();
+        Task<List<TableState>> GetAllAsync(int restaurantId);
+        Task<TableState?> GetByTableIdAsync(string tableId, int restaurantId);
 
-        Task StartTimerAsync(string tableId);
-        Task StopTimerAsync(string tableId);
-
-        Task SetStatusAsync(string tableId, string status);
-
-        Task DeleteAsync(TableState state);
+        Task SetOccupiedAsync(string tableId, int restaurantId);
+        Task<bool> MoveToOrderedAsync(string tableId, int restaurantId);
+        Task<bool> MoveToBillingAsync(string tableId, int restaurantId);
+        Task ResetAsync(string tableId, int restaurantId);
     }
-
 }

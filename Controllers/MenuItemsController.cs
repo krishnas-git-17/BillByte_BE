@@ -1,11 +1,14 @@
-﻿using BillByte.Interface;
+﻿using Billbyte_BE.Helpers;
+using BillByte.Interface;
 using BillByte.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BillByte.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("api/menu-items")]
     public class MenuItemsController : ControllerBase
     {
         private readonly IMenuItemRepository _repo;
@@ -15,44 +18,45 @@ namespace BillByte.Controllers
             _repo = repo;
         }
 
-        // -------------------------------- GET ALL --------------------------------
         [HttpGet]
         public async Task<IActionResult> Get()
-            => Ok(await _repo.GetAllAsync());
+        {
+            var restaurantId = User.RestaurantId();
+            return Ok(await _repo.GetAllAsync(restaurantId));
+        }
 
-        // -------------------------------- GET BY ID --------------------------------
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var item = await _repo.GetByIdAsync(id);
-            if (item == null) return NotFound("Menu item not found");
-
+            var restaurantId = User.RestaurantId();
+            var item = await _repo.GetByIdAsync(id, restaurantId);
+            if (item == null) return NotFound();
             return Ok(item);
         }
 
-        // -------------------------------- CREATE --------------------------------
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] MenuItem item)
         {
-            var created = await _repo.AddAsync(item);
-            return Ok(created);
+            item.RestaurantId = User.RestaurantId();
+            item.CreatedBy = User.UserId();
+
+            return Ok(await _repo.AddAsync(item));
         }
 
-        // -------------------------------- UPDATE --------------------------------
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] MenuItem item)
         {
             item.MenuId = id;
-            var updated = await _repo.UpdateAsync(item);
-            return Ok(updated);
+            item.RestaurantId = User.RestaurantId();
+
+            return Ok(await _repo.UpdateAsync(item));
         }
 
-        // -------------------------------- DELETE --------------------------------
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            bool deleted = await _repo.DeleteAsync(id);
-            return Ok(new { deleted });
+            var restaurantId = User.RestaurantId();
+            return Ok(await _repo.DeleteAsync(id, restaurantId));
         }
     }
 }

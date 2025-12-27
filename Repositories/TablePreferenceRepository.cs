@@ -1,5 +1,4 @@
 ﻿using BillByte.Interface;
-using BillByte.Model;
 using Billbyte_BE.Models;
 using Npgsql;
 
@@ -14,14 +13,17 @@ namespace BillByte.Repository
             _conn = cfg.GetConnectionString("DBConn");
         }
 
-        // ---------------------- GET ALL ----------------------
-        public async Task<List<TablePreference>> GetAllAsync()
+        public async Task<List<TablePreference>> GetAllAsync(int restaurantId)
         {
             var list = new List<TablePreference>();
 
             using var con = new NpgsqlConnection(_conn);
             using var cmd = new NpgsqlCommand(
-                @"SELECT * FROM ""TablePreferences"" ORDER BY ""Name""", con);
+                @"SELECT * FROM ""TablePreferences""
+                  WHERE ""RestaurantId""=@rid
+                  ORDER BY ""Name""", con);
+
+            cmd.Parameters.AddWithValue("@rid", restaurantId);
 
             await con.OpenAsync();
             using var dr = await cmd.ExecuteReaderAsync();
@@ -32,34 +34,20 @@ namespace BillByte.Repository
             return list;
         }
 
-        // ---------------------- GET BY ID ----------------------
-        public async Task<TablePreference?> GetByIdAsync(int id)
+        public async Task<TablePreference?> GetByIdAsync(int id, int restaurantId)
         {
             using var con = new NpgsqlConnection(_conn);
             using var cmd = new NpgsqlCommand(
-                @"SELECT * FROM ""TablePreferences"" WHERE ""Id""=@id", con);
+                @"SELECT * FROM ""TablePreferences""
+                  WHERE ""Id""=@id AND ""RestaurantId""=@rid", con);
 
             cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@rid", restaurantId);
 
             await con.OpenAsync();
             using var dr = await cmd.ExecuteReaderAsync();
 
             return await dr.ReadAsync() ? Map(dr) : null;
-        }
-
-        public async Task AddAsync(TablePreference item)
-        {
-            using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"
-                INSERT INTO ""TablePreferences"" (""Name"", ""TableCount"")
-                VALUES (@name, @count)
-            ", con);
-
-            cmd.Parameters.AddWithValue("@name", item.Name);
-            cmd.Parameters.AddWithValue("@count", item.TableCount);
-
-            await con.OpenAsync();
-            await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task AddRangeAsync(List<TablePreference> items)
@@ -70,10 +58,11 @@ namespace BillByte.Repository
             foreach (var item in items)
             {
                 using var cmd = new NpgsqlCommand(@"
-                    INSERT INTO ""TablePreferences"" (""Name"", ""TableCount"")
-                    VALUES (@name, @count)
-                ", con);
+                    INSERT INTO ""TablePreferences""
+                    (""RestaurantId"", ""Name"", ""TableCount"")
+                    VALUES (@rid, @name, @count)", con);
 
+                cmd.Parameters.AddWithValue("@rid", item.RestaurantId);
                 cmd.Parameters.AddWithValue("@name", item.Name);
                 cmd.Parameters.AddWithValue("@count", item.TableCount);
 
@@ -88,10 +77,10 @@ namespace BillByte.Repository
                 UPDATE ""TablePreferences""
                 SET ""Name""=@name,
                     ""TableCount""=@count
-                WHERE ""Id""=@id
-            ", con);
+                WHERE ""Id""=@id AND ""RestaurantId""=@rid", con);
 
             cmd.Parameters.AddWithValue("@id", item.Id);
+            cmd.Parameters.AddWithValue("@rid", item.RestaurantId);
             cmd.Parameters.AddWithValue("@name", item.Name);
             cmd.Parameters.AddWithValue("@count", item.TableCount);
 
@@ -99,25 +88,28 @@ namespace BillByte.Repository
             await cmd.ExecuteNonQueryAsync();
         }
 
-        // ---------------------- DELETE BY ID ----------------------
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id, int restaurantId)
         {
             using var con = new NpgsqlConnection(_conn);
             using var cmd = new NpgsqlCommand(
-                @"DELETE FROM ""TablePreferences"" WHERE ""Id""=@id", con);
+                @"DELETE FROM ""TablePreferences""
+                  WHERE ""Id""=@id AND ""RestaurantId""=@rid", con);
 
             cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@rid", restaurantId);
 
             await con.OpenAsync();
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        // ---------------------- DELETE ALL ----------------------
-        public async Task<bool> DeleteAllAsync()
+        public async Task<bool> DeleteAllAsync(int restaurantId)
         {
             using var con = new NpgsqlConnection(_conn);
             using var cmd = new NpgsqlCommand(
-                @"DELETE FROM ""TablePreferences""", con);
+                @"DELETE FROM ""TablePreferences""
+                  WHERE ""RestaurantId""=@rid", con);
+
+            cmd.Parameters.AddWithValue("@rid", restaurantId);
 
             await con.OpenAsync();
             return await cmd.ExecuteNonQueryAsync() > 0;
@@ -128,7 +120,8 @@ namespace BillByte.Repository
             return new TablePreference
             {
                 Id = Convert.ToInt32(dr["Id"]),
-                Name = dr["Name"].ToString(),
+                RestaurantId = Convert.ToInt32(dr["RestaurantId"]),
+                Name = dr["Name"].ToString()!,
                 TableCount = Convert.ToInt32(dr["TableCount"])
             };
         }
