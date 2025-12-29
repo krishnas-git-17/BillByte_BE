@@ -1,4 +1,5 @@
-﻿using BillByte.Interface;
+﻿using Billbyte_BE.Helpers;
+using BillByte.Interface;
 using BillByte.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,48 +14,35 @@ public class MenuItemImageController : ControllerBase
         _repo = repo;
     }
 
-    // POST
-    [HttpPost]
-    public async Task<IActionResult> Add(MenuItemImgs img)
-    {
-        if (string.IsNullOrWhiteSpace(img.ItemImage))
-            return BadRequest("Image is required");
-
-        var result = await _repo.AddAsync(img);
-        return Ok(result);
-    }
-
-    // GET ALL
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _repo.GetAllAsync());
+        var restaurantId = User.RestaurantId();
+        var images = await _repo.GetAllAsync(restaurantId);
+        return Ok(images);
     }
 
-    // GET BY ID
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+
+    [HttpPost]
+    public async Task<IActionResult> Add(MenuItemImgs img)
     {
-        var data = await _repo.GetByIdAsync(id);
-        return data == null ? NotFound() : Ok(data);
+        img.RestaurantId = User.RestaurantId();
+        img.CreatedBy = User.UserId();
+
+        return Ok(await _repo.AddAsync(img));
     }
 
-    // PUT
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, MenuItemImgs img)
+    [HttpGet("{menuId}")]
+    public async Task<IActionResult> GetByMenu(string menuId)
     {
-        if (id != img.Id)
-            return BadRequest("ID mismatch");
-
-        var updated = await _repo.UpdateAsync(img);
-        return Ok(updated);
+        var restaurantId = User.RestaurantId();
+        return Ok(await _repo.GetByMenuIdAsync(menuId, restaurantId));
     }
 
-    // DELETE
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var success = await _repo.DeleteAsync(id);
-        return success ? Ok("Deleted") : NotFound();
+        var restaurantId = User.RestaurantId();
+        return Ok(await _repo.DeleteAsync(id, restaurantId));
     }
 }

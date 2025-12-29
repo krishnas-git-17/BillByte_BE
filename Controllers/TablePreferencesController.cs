@@ -1,4 +1,5 @@
-﻿using BillByte.Interface;
+﻿using Billbyte_BE.Helpers;
+using BillByte.Interface;
 using Billbyte_BE.Models;
 using Billbyte_BE.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -16,27 +17,30 @@ namespace Billbyte_BE.Controllers
             _repository = repository;
         }
 
-        // GET
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var data = await _repository.GetAllAsync();
-            return Ok(data);
+            var restaurantId = User.RestaurantId();
+            return Ok(await _repository.GetAllAsync(restaurantId));
         }
 
-        // POST (bulk create)
         [HttpPost]
         public async Task<IActionResult> Post(List<TablePreference> request)
         {
+            var restaurantId = User.RestaurantId();
+
+            request.ForEach(x => x.RestaurantId = restaurantId);
+
             await _repository.AddRangeAsync(request);
-            return Ok(new { message = "Table preferences created" });
+            return Ok();
         }
 
-        // PUT
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, TablePreference request)
         {
-            var existing = await _repository.GetByIdAsync(id);
+            var restaurantId = User.RestaurantId();
+
+            var existing = await _repository.GetByIdAsync(id, restaurantId);
             if (existing == null)
                 return NotFound();
 
@@ -44,30 +48,21 @@ namespace Billbyte_BE.Controllers
             existing.TableCount = request.TableCount;
 
             await _repository.UpdateAsync(existing);
-            return Ok(new { message = "Updated successfully" });
+            return Ok();
         }
 
-        // DELETE by id
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _repository.DeleteAsync(id);
-            return Ok(new { message = "Deleted successfully" });
+            var restaurantId = User.RestaurantId();
+            return Ok(await _repository.DeleteAsync(id, restaurantId));
         }
 
-        // DELETE all
         [HttpDelete]
         public async Task<IActionResult> DeleteAll()
         {
-            await _repository.DeleteAllAsync();
-            return Ok(new { message = "All table preferences deleted" });
+            var restaurantId = User.RestaurantId();
+            return Ok(await _repository.DeleteAllAsync(restaurantId));
         }
-
-        //[HttpGet("generate-hash")]
-        //public IActionResult GenerateHash()
-        //{
-        //    var hash = BCrypt.Net.BCrypt.HashPassword("Krishna@123");
-        //    return Ok(hash);
-        //}
     }
 }

@@ -1,108 +1,51 @@
 ﻿using BillByte.Interface;
 using BillByte.Model;
-using Npgsql;
+using Billbyte_BE.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BillByte.Repository
 {
     public class MenuItemImageRepository : IMenuItemImagesRepository
     {
-        private readonly string _conn;
+        private readonly AppDbContext _context;
 
-        public MenuItemImageRepository(IConfiguration cfg)
+        // ✅ SINGLE constructor (DI-safe)
+        public MenuItemImageRepository(AppDbContext context)
         {
-            _conn = cfg.GetConnectionString("DBConn");
+            _context = context;
         }
 
-        public async Task<List<MenuItemImgs>> GetAllAsync()
+        public async Task<List<MenuItemImgs>> GetAllAsync(int restaurantId)
         {
-            var list = new List<MenuItemImgs>();
-
-            using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"SELECT * FROM ""MenuItemImgs"" ORDER BY ""Id""", con);
-
-            await con.OpenAsync();
-            using var dr = await cmd.ExecuteReaderAsync();
-
-            while (await dr.ReadAsync())
-                list.Add(Map(dr));
-
-            return list;
+            return await _context.MenuItemImgs
+                .Where(x => x.RestaurantId == restaurantId)
+                .ToListAsync();
         }
 
-        public async Task<MenuItemImgs?> GetByIdAsync(int id)
+        public async Task<List<MenuItemImgs>> GetByMenuIdAsync(string menuId, int restaurantId)
         {
-            using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"SELECT * FROM ""MenuItemImgs"" WHERE ""Id""=@id", con);
-
-            cmd.Parameters.AddWithValue("@id", id);
-
-            await con.OpenAsync();
-            using var dr = await cmd.ExecuteReaderAsync();
-
-            return await dr.ReadAsync() ? Map(dr) : null;
+            return await _context.MenuItemImgs
+                .Where(x => x.MenuId == menuId && x.RestaurantId == restaurantId)
+                .ToListAsync();
         }
 
         public async Task<MenuItemImgs> AddAsync(MenuItemImgs img)
         {
-            using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"
-        INSERT INTO ""MenuItemImgs""(""ItemName"", ""ItemImage"", ""CreatedDate"") 
-        VALUES(@name, @img, @date)
-        RETURNING ""Id"";
-    ", con);
-
-            cmd.Parameters.AddWithValue("@name", img.ItemName);
-            cmd.Parameters.AddWithValue("@img", img.ItemImage);
-            cmd.Parameters.AddWithValue("@date", img.CreatedDate.ToUniversalTime());
-
-            await con.OpenAsync();
-            img.Id = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-
+            _context.MenuItemImgs.Add(img);
+            await _context.SaveChangesAsync();
             return img;
         }
 
-
-        public async Task<MenuItemImgs> UpdateAsync(MenuItemImgs img)
+        public async Task<bool> DeleteAsync(int id, int restaurantId)
         {
-            using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"
-        UPDATE ""MenuItemImgs""
-        SET ""ItemName""=@name, ""ItemImage""=@img
-        WHERE ""Id""=@id;
-    ", con);
+            var img = await _context.MenuItemImgs
+                .FirstOrDefaultAsync(x => x.Id == id && x.RestaurantId == restaurantId);
 
-            cmd.Parameters.AddWithValue("@id", img.Id);
-            cmd.Parameters.AddWithValue("@name", img.ItemName);
-            cmd.Parameters.AddWithValue("@img", img.ItemImage);
+            if (img == null) return false;
 
-            await con.OpenAsync();
-            await cmd.ExecuteNonQueryAsync();
-
-            return img;
+            _context.MenuItemImgs.Remove(img);
+            await _context.SaveChangesAsync();
+            return true;
         }
-
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            using var con = new NpgsqlConnection(_conn);
-            using var cmd = new NpgsqlCommand(@"DELETE FROM ""MenuItemImgs"" WHERE ""Id""=@id", con);
-
-            cmd.Parameters.AddWithValue("@id", id);
-
-            await con.OpenAsync();
-            return await cmd.ExecuteNonQueryAsync() > 0;
-        }
-
-        private MenuItemImgs Map(NpgsqlDataReader dr)
-        {
-            return new MenuItemImgs
-            {
-                Id = Convert.ToInt32(dr["Id"]),
-                ItemName = dr["ItemName"].ToString() ?? "",
-                ItemImage = dr["ItemImage"].ToString() ?? "",
-                CreatedDate = dr.GetDateTime(dr.GetOrdinal("CreatedDate"))
-            };
-        }
-
     }
 }
