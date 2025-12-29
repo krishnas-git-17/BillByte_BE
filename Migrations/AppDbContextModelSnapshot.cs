@@ -36,6 +36,10 @@ namespace Billbyte_BE.Migrations
                     b.Property<decimal>("Discount")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("InvoiceNo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("OrderType")
                         .IsRequired()
                         .HasColumnType("text");
@@ -96,6 +100,72 @@ namespace Billbyte_BE.Migrations
                     b.HasIndex("CompletedOrderId");
 
                     b.ToTable("CompletedOrderItems", (string)null);
+                });
+
+            modelBuilder.Entity("BillByte.Model.KotSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BusinessDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("KotNo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("KotNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TableId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId", "BusinessDate", "KotNo")
+                        .IsUnique();
+
+                    b.ToTable("KotSnapshots", (string)null);
+                });
+
+            modelBuilder.Entity("BillByte.Model.KotSnapshotItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("KotSnapshotId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Qty")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SpecialNote")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KotSnapshotId");
+
+                    b.ToTable("KotSnapshotItems", (string)null);
                 });
 
             modelBuilder.Entity("BillByte.Model.MenuItem", b =>
@@ -275,39 +345,6 @@ namespace Billbyte_BE.Migrations
                     b.ToTable("ActiveTableItems", (string)null);
                 });
 
-            modelBuilder.Entity("Billbyte_BE.Models.KotSnapshot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Qty")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RestaurantId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("TableId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RestaurantId", "TableId", "ItemId")
-                        .IsUnique();
-
-                    b.ToTable("KotSnapshots", (string)null);
-                });
-
             modelBuilder.Entity("Billbyte_BE.Models.TablePreference", b =>
                 {
                     b.Property<int>("Id")
@@ -374,7 +411,21 @@ namespace Billbyte_BE.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BillByte.Model.KotSnapshotItem", b =>
+                {
+                    b.HasOne("BillByte.Model.KotSnapshot", null)
+                        .WithMany("Items")
+                        .HasForeignKey("KotSnapshotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BillByte.Model.CompletedOrder", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("BillByte.Model.KotSnapshot", b =>
                 {
                     b.Navigation("Items");
                 });

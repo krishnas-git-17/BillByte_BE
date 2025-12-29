@@ -10,6 +10,8 @@ namespace Billbyte_BE.Repositories.Interface
         Task SetOccupiedAsync(string tableId, int restaurantId);
         Task<bool> MoveToOrderedAsync(string tableId, int restaurantId);
         Task<bool> MoveToBillingAsync(string tableId, int restaurantId);
+        Task<bool> MoveToReservationAsync(string tableId, int restaurantId);
+
         Task ResetAsync(string tableId, int restaurantId);
     }
 }

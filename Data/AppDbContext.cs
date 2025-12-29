@@ -22,7 +22,7 @@ namespace Billbyte_BE.Data
         public DbSet<CompletedOrderItem> CompletedOrderItems { get; set; }
         public DbSet<ActiveTableItem> ActiveTableItems { get; set; }
         public DbSet<KotSnapshot> KotSnapshots { get; set; }
-
+        public DbSet<KotSnapshotItem> KotSnapshotItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -121,14 +121,30 @@ namespace Billbyte_BE.Data
 
                 e.HasKey(x => x.Id);
 
-                e.Property(x => x.TableId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                e.HasIndex(x => new { x.RestaurantId, x.BusinessDate, x.KotNo })
+ .IsUnique();
 
-                e.HasIndex(x => new { x.RestaurantId, x.TableId, x.ItemId })
-                    .IsUnique();
+
+                e.Property(x => x.TableId)
+                 .IsRequired()
+                 .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<KotSnapshotItem>(e =>
+            {
+                e.ToTable("KotSnapshotItems");
+
+                e.HasKey(x => x.Id);
+
+                e.Property(x => x.ItemName)
+                 .IsRequired()
+                 .HasMaxLength(200);
+
+                e.Property(x => x.SpecialNote)
+                 .HasColumnType("text");
+
+                e.HasIndex(x => x.KotSnapshotId);
+            });
 
 
         }

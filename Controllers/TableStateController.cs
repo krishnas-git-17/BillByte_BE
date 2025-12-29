@@ -46,6 +46,14 @@ namespace Billbyte_BE.Controllers
             return success ? Ok() : BadRequest();
         }
 
+        [HttpPost("reservation/{tableId}")]
+        public async Task<IActionResult> MoveToReservation(string tableId)
+        {
+            var restaurantId = User.RestaurantId();
+            var success = await _repo.MoveToReservationAsync(tableId, restaurantId);
+            return success ? Ok() : BadRequest();
+        }
+
         [HttpPost("reset/{tableId}")]
         public async Task<IActionResult> Reset(string tableId)
         {

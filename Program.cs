@@ -34,6 +34,7 @@ builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 builder.Services.AddScoped<IMenuItemImagesRepository, MenuItemImageRepository>();
 builder.Services.AddScoped<IActiveTableItemRepository, ActiveTableItemRepository>();
 builder.Services.AddScoped<ICompletedOrderRepository, CompletedOrderRepository>();
+builder.Services.AddScoped<IKotRepository, KotRepository>();
 builder.Services.AddHttpClient<GeminiAiService>();
 
 

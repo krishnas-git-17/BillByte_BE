@@ -10,5 +10,8 @@ namespace Billbyte_BE.Repositories.Interface
             int restaurantId,
             DateTime from,
             DateTime to);
+
+        Task<CompletedOrder?> GetByInvoiceAsync(int restaurantId, string invoiceNo);
+
     }
 }
