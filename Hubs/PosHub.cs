@@ -13,10 +13,14 @@ namespace BillByte.Hubs
                 .FindFirst("restaurantId")!
                 .Value;
 
+            Console.WriteLine($"PosHub: Connection '{Context.ConnectionId}' connected for restaurant '{restaurantId}'.");
+
             await Groups.AddToGroupAsync(
                 Context.ConnectionId,
                 restaurantId
             );
+
+            Console.WriteLine($"PosHub: Connection '{Context.ConnectionId}' added to group '{restaurantId}'.");
 
             await base.OnConnectedAsync();
         }
@@ -27,10 +31,14 @@ namespace BillByte.Hubs
                 .FindFirst("restaurantId")!
                 .Value;
 
+            Console.WriteLine($"PosHub: Connection '{Context.ConnectionId}' disconnecting from restaurant '{restaurantId}'. Exception: {exception?.Message ?? "none"}");
+
             await Groups.RemoveFromGroupAsync(
                 Context.ConnectionId,
                 restaurantId
             );
+
+            Console.WriteLine($"PosHub: Connection '{Context.ConnectionId}' removed from group '{restaurantId}'.");
 
             await base.OnDisconnectedAsync(exception);
         }

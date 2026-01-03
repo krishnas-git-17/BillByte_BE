@@ -10,5 +10,8 @@ namespace BillByte.Interface
         Task UpdateAsync(TablePreference item);
         Task<bool> DeleteAsync(int id, int restaurantId);
         Task<bool> DeleteAllAsync(int restaurantId);
+
+        // Notify subscribers (SignalR) that user ↔ table assignments changed
+        Task NotifyAssignmentChangedAsync(int restaurantId, int userId, int tablePreferenceId);
     }
 }

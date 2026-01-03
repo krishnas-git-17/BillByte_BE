@@ -1,5 +1,7 @@
 ﻿using BillByte.Interface;
+using BillByte.Hubs;
 using Billbyte_BE.Models;
+using Microsoft.AspNetCore.SignalR;
 using Npgsql;
 
 namespace BillByte.Repository
@@ -7,10 +9,12 @@ namespace BillByte.Repository
     public class TablePreferenceRepository : ITablePreferenceRepository
     {
         private readonly string _conn;
+        private readonly IHubContext<PosHub> _hub;
 
-        public TablePreferenceRepository(IConfiguration cfg)
+        public TablePreferenceRepository(IConfiguration cfg, IHubContext<PosHub> hub)
         {
             _conn = cfg.GetConnectionString("DBConn");
+            _hub = hub;
         }
 
         public async Task<List<TablePreference>> GetAllAsync(int restaurantId)
@@ -124,6 +128,22 @@ namespace BillByte.Repository
                 Name = dr["Name"].ToString()!,
                 TableCount = Convert.ToInt32(dr["TableCount"])
             };
+        }
+
+        public async Task NotifyAssignmentChangedAsync(int restaurantId, int userId, int tablePreferenceId)
+        {
+            // Frontend dashboard (which uses table-preferences) should listen to this event
+            var group = restaurantId.ToString();
+            var payload = new
+            {
+                userId,
+                tablePreferenceId
+            };
+
+            await _hub.Clients.Group(group)
+                .SendAsync("ASSIGNED_TABLES_CHANGED", payload);
+
+            Console.WriteLine($"SignalR (TablePreferenceRepository): Sent ASSIGNED_TABLES_CHANGED to group {group} -> user {userId} / section {tablePreferenceId}");
         }
     }
 }
