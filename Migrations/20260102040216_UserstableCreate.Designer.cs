@@ -3,6 +3,7 @@ using System;
 using Billbyte_BE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Billbyte_BE.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260102040216_UserstableCreate")]
+    partial class UserstableCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,10 +280,11 @@ namespace Billbyte_BE.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("CreatedByUserId")
+                    b.Property<int>("CreatedByUserId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("EmployeeId")
@@ -315,7 +319,7 @@ namespace Billbyte_BE.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("RestaurantId", "EmployeeId")
+                    b.HasIndex("EmployeeId")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
@@ -423,45 +427,6 @@ namespace Billbyte_BE.Migrations
                     b.ToTable("TableStates", (string)null);
                 });
 
-            modelBuilder.Entity("Billbyte_BE.Models.UserTableAssignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("RestaurantId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TablePreferenceId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("TablePreferenceId1")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TablePreferenceId");
-
-                    b.HasIndex("TablePreferenceId1");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
-
-                    b.HasIndex("RestaurantId", "UserId", "TablePreferenceId")
-                        .IsUnique();
-
-                    b.ToTable("UserTableAssignments", (string)null);
-                });
-
             modelBuilder.Entity("BillByte.Model.CompletedOrderItem", b =>
                 {
                     b.HasOne("BillByte.Model.CompletedOrder", null)
@@ -478,33 +443,6 @@ namespace Billbyte_BE.Migrations
                         .HasForeignKey("KotSnapshotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Billbyte_BE.Models.UserTableAssignment", b =>
-                {
-                    b.HasOne("Billbyte_BE.Models.TablePreference", null)
-                        .WithMany()
-                        .HasForeignKey("TablePreferenceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Billbyte_BE.Models.TablePreference", "TablePreference")
-                        .WithMany()
-                        .HasForeignKey("TablePreferenceId1");
-
-                    b.HasOne("BillByte.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BillByte.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("TablePreference");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BillByte.Model.CompletedOrder", b =>

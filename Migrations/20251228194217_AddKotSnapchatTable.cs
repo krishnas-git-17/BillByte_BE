@@ -156,23 +156,7 @@ namespace Billbyte_BE.Migrations
                     table.PrimaryKey("PK_TableStates", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RestaurantId = table.Column<int>(type: "integer", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
+          
             migrationBuilder.CreateTable(
                 name: "CompletedOrderItems",
                 columns: table => new
@@ -269,11 +253,7 @@ namespace Billbyte_BE.Migrations
                 table: "TableStates",
                 columns: new[] { "RestaurantId", "TableId" });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
-                table: "Users",
-                column: "Email",
-                unique: true);
+           
         }
 
         /// <inheritdoc />
@@ -303,8 +283,6 @@ namespace Billbyte_BE.Migrations
             migrationBuilder.DropTable(
                 name: "TableStates");
 
-            migrationBuilder.DropTable(
-                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "CompletedOrders");
