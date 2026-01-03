@@ -23,6 +23,11 @@ namespace Billbyte_BE.Controllers
                 icon = "restaurant_menu",
                 route = "/menu-items"
             },
+            new {
+                label = "Users",
+                icon = "people",
+                route = "/users"
+            },
 new {
 label = "Reports",
 icon = "bar_chart",

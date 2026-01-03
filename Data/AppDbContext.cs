@@ -23,16 +23,27 @@ namespace Billbyte_BE.Data
         public DbSet<ActiveTableItem> ActiveTableItems { get; set; }
         public DbSet<KotSnapshot> KotSnapshots { get; set; }
         public DbSet<KotSnapshotItem> KotSnapshotItems { get; set; }
+        public DbSet<UserTableAssignment> UserTableAssignments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<User>(e =>
             {
                 e.ToTable("Users");
+
                 e.HasKey(x => x.Id);
-                e.HasIndex(x => x.Email).IsUnique();
+
+                // EmployeeId unique per restaurant
+                e.HasIndex(x => new { x.RestaurantId, x.EmployeeId })
+                 .IsUnique();
+
+                // Email unique (nullable allowed)
+                e.HasIndex(x => x.Email)
+                 .IsUnique();
             });
+
+
 
             modelBuilder.Entity<Restaurant>(e =>
             {
@@ -144,6 +155,30 @@ namespace Billbyte_BE.Data
                  .HasColumnType("text");
 
                 e.HasIndex(x => x.KotSnapshotId);
+            });
+
+            modelBuilder.Entity<UserTableAssignment>(e =>
+            {
+                e.ToTable("UserTableAssignments");
+
+                e.HasKey(x => x.Id);
+
+                e.HasIndex(x => new
+                {
+                    x.RestaurantId,
+                    x.UserId,
+                    x.TablePreferenceId
+                }).IsUnique();
+
+                e.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne<TablePreference>()
+                    .WithMany()
+                    .HasForeignKey(x => x.TablePreferenceId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
 

@@ -363,6 +363,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "BillByte.Controllers.TableAssignmentsController",
+    "Method": "Assign",
+    "RelativePath": "api/table-assignments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "BillByte.DTO.AssignTablesRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BillByte.Controllers.TableAssignmentsController",
+    "Method": "GetByEmployee",
+    "RelativePath": "api/table-assignments/by-employee/{employeeId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BillByte.Controllers.TableAssignmentsController",
+    "Method": "MySections",
+    "RelativePath": "api/table-assignments/my",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Billbyte_BE.Controllers.TablePreferencesController",
     "Method": "Get",
     "RelativePath": "api/table-preferences",
@@ -520,6 +562,53 @@
       {
         "Name": "tableId",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BillByte.Controllers.UsersController",
+    "Method": "GetUsers",
+    "RelativePath": "api/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BillByte.Controllers.UsersController",
+    "Method": "Create",
+    "RelativePath": "api/users",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "BillByte.DTO.CreateUserRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BillByte.Controllers.UsersController",
+    "Method": "UpdateStatus",
+    "RelativePath": "api/users/{id}/status",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "isActive",
+        "Type": "System.Boolean",
         "IsRequired": true
       }
     ],
