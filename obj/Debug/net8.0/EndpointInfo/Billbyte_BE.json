@@ -229,6 +229,37 @@
         }
       }
     },
+    "/api/auth/verify-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/auth/login": {
       "post": {
         "tags": [
@@ -566,6 +597,18 @@
               "type": "string"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/plans": {
+      "get": {
+        "tags": [
+          "Plans"
         ],
         "responses": {
           "200": {
@@ -1301,6 +1344,10 @@
           "password": {
             "type": "string",
             "nullable": true
+          },
+          "planId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -1346,6 +1393,20 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "otp": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       }
     },
     "securitySchemes": {

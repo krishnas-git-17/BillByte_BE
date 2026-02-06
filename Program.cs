@@ -1,8 +1,10 @@
 using BillByte.Hubs;
 using BillByte.Interface;
+using BillByte.Models;
 using BillByte.Repositories;
 using BillByte.Repositories.Interface;
 using BillByte.Repository;
+using BillByte.Services;
 using Billbyte_BE.Data;
 using Billbyte_BE.Helpers;
 using Billbyte_BE.Repositories;
@@ -26,6 +28,10 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DBConn")));
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings")
+);
+
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITablePreferenceRepository, TablePreferenceRepository>();
@@ -39,6 +45,8 @@ builder.Services.AddScoped<IKotRepository, KotRepository>();
 builder.Services.AddScoped<IUserTableAssignmentRepository,
     UserTableAssignmentRepository>();
 builder.Services.AddHttpClient<GeminiAiService>();
+builder.Services.AddScoped<EmailService>();
+
 
 
 
@@ -134,11 +142,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//    db.Database.Migrate();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    DbSeeder.SeedPlans(db);
+    db.Database.Migrate();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();

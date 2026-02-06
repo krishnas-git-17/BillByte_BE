@@ -1,8 +1,12 @@
 ﻿using BillByte.DTO;
 using BillByte.Models;
 using BillByte.Repositories.Interface;
+using BillByte.Services;
 using Billbyte_BE.Data;
+using Billbyte_BE.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,26 +21,61 @@ namespace BillByte.Controllers
         private readonly IConfiguration _config;
         private readonly IUserRepository _userRepo;
         private readonly AppDbContext _context;
+        private readonly EmailService _emailService;
 
         public AuthController(
-            IConfiguration config,
-            IUserRepository userRepo,
-            AppDbContext context)
+      IConfiguration config,
+      IUserRepository userRepo,
+      AppDbContext context,
+      EmailService emailService)
         {
             _config = config;
             _userRepo = userRepo;
             _context = context;
+            _emailService = emailService;
         }
 
         // ======================
-        // SIGNUP (OWNER ONLY)
+        // SIGNUP (OWNER)
         // ======================
         [HttpPost("signup")]
         public async Task<IActionResult> Signup(SignupRequestDto request)
         {
             using var tx = await _context.Database.BeginTransactionAsync();
 
-            // 1️⃣ Create restaurant
+            // 1️⃣ Validate plan
+            var plan = await _context.Plans.FindAsync(request.PlanId);
+            if (plan == null || !plan.IsActive)
+                return BadRequest("Invalid plan selected");
+
+            // 2️⃣ CHECK EMAIL FIRST (THIS WAS MISSING)
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            // ❌ Case: email already verified → block
+            if (user != null && user.IsEmailVerified)
+            {
+                return BadRequest("Email already registered. Please login.");
+            }
+
+            // 🔁 Case: email exists but NOT verified → resend OTP
+            if (user != null && !user.IsEmailVerified)
+            {
+                user.EmailOtp = new Random().Next(100000, 999999).ToString();
+                user.EmailOtpExpiry = DateTime.UtcNow.AddMinutes(5);
+
+                await _context.SaveChangesAsync();
+                await _emailService.SendOtpAsync(user.Email!, user.EmailOtp);
+
+                await tx.CommitAsync();
+
+                return Ok(new
+                {
+                    message = "OTP resent to your email"
+                });
+            }
+
+            // ✅ Case: NEW EMAIL → create everything
             var restaurant = new Restaurant
             {
                 Name = request.RestaurantName
@@ -45,7 +84,8 @@ namespace BillByte.Controllers
             _context.Restaurants.Add(restaurant);
             await _context.SaveChangesAsync();
 
-            // 2️⃣ Create owner user
+            var otp = new Random().Next(100000, 999999).ToString();
+
             var owner = new User
             {
                 RestaurantId = restaurant.Id,
@@ -55,19 +95,55 @@ namespace BillByte.Controllers
                 EmployeeId = $"BB-OWN-{restaurant.Id}",
                 Name = "Owner",
                 IsActive = true,
-                ForcePasswordChange = false
+
+                IsEmailVerified = false,
+                EmailOtp = otp,
+                EmailOtpExpiry = DateTime.UtcNow.AddMinutes(5),
+
+                PlanId = plan.Id,
+                IsPlanActive = true,
+                PlanExpiryDate = DateTime.UtcNow.AddDays(plan.DurationInDays)
             };
 
             _context.Users.Add(owner);
             await _context.SaveChangesAsync();
 
+            await _emailService.SendOtpAsync(owner.Email!, otp);
+
             await tx.CommitAsync();
 
             return Ok(new
             {
-                restaurantId = restaurant.Id,
-                ownerEmployeeId = owner.EmployeeId
+                message = "Signup successful. OTP sent to email."
             });
+        }
+
+
+
+        // ======================
+        // VERIFY EMAIL OTP
+        // ======================
+        [HttpPost("verify-email")]
+        public async Task<IActionResult> VerifyEmail(VerifyEmailDto request)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+
+            if (user == null)
+                return BadRequest("User not found");
+
+            if (user.EmailOtp != request.Otp)
+                return BadRequest("Invalid OTP");
+
+            if (user.EmailOtpExpiry < DateTime.UtcNow)
+                return BadRequest("OTP expired");
+
+            user.IsEmailVerified = true;
+            user.EmailOtp = null;
+            user.EmailOtpExpiry = null;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Email verified successfully");
         }
 
         // ======================
@@ -78,22 +154,17 @@ namespace BillByte.Controllers
         {
             User? user = null;
 
-            // EMAIL LOGIN
             if (!string.IsNullOrEmpty(request.Email))
-            {
                 user = _userRepo.GetByEmail(request.Email);
-            }
-            // EMPLOYEE ID LOGIN
             else if (!string.IsNullOrEmpty(request.EmployeeId))
-            {
                 user = _userRepo.GetByEmployeeId(request.EmployeeId);
-            }
 
-            if (user == null || !user.IsActive)
-                return Unauthorized("Invalid credentials");
+            if (!user.IsEmailVerified)
+                return Unauthorized("Email not verified");
 
-            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                return Unauthorized("Invalid credentials");
+            if (!user.IsPlanActive || user.PlanExpiryDate < DateTime.UtcNow)
+                return Unauthorized("Plan inactive or expired");
+
 
             user.LastLoginAt = DateTime.UtcNow;
             _context.SaveChanges();
@@ -135,5 +206,6 @@ namespace BillByte.Controllers
                 ForcePasswordChange = user.ForcePasswordChange
             });
         }
+       
     }
 }

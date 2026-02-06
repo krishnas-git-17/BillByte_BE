@@ -121,7 +121,6 @@ D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\refint\Billbyte_BE.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.pdb
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\Billbyte_BE.genruntimeconfig.cache
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\ref\Billbyte_BE.dll
-D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.Data.Sqlite.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
@@ -147,3 +146,4 @@ D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\runtimes\win-arm\nativ
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\runtimes\win-arm64\native\e_sqlite3.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 D:\BillByte\BillByte_BackEnd\Billbyte_BE\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
+D:\BillByte\BillByte_BackEnd\Billbyte_BE\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

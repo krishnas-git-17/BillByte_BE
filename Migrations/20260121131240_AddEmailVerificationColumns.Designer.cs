@@ -3,6 +3,7 @@ using System;
 using Billbyte_BE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Billbyte_BE.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260121131240_AddEmailVerificationColumns")]
+    partial class AddEmailVerificationColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,35 +246,6 @@ namespace Billbyte_BE.Migrations
                     b.ToTable("MenuItemImgs", (string)null);
                 });
 
-            modelBuilder.Entity("BillByte.Models.Plan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DurationInDays")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("MaxUsers")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Plans", (string)null);
-                });
-
             modelBuilder.Entity("BillByte.Models.Restaurant", b =>
                 {
                     b.Property<int>("Id")
@@ -331,9 +305,6 @@ namespace Billbyte_BE.Migrations
                     b.Property<bool>("IsEmailVerified")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsPlanActive")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime?>("LastLoginAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -344,12 +315,6 @@ namespace Billbyte_BE.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("PlanExpiryDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("PlanId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("integer");

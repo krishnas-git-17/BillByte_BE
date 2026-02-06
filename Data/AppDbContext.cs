@@ -24,6 +24,8 @@ namespace Billbyte_BE.Data
         public DbSet<KotSnapshot> KotSnapshots { get; set; }
         public DbSet<KotSnapshotItem> KotSnapshotItems { get; set; }
         public DbSet<UserTableAssignment> UserTableAssignments { get; set; }
+        public DbSet<Plan> Plans { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +45,11 @@ namespace Billbyte_BE.Data
                  .IsUnique();
             });
 
+            modelBuilder.Entity<Plan>(e =>
+            {
+                e.ToTable("Plans");
+                e.HasKey(x => x.Id);
+            });
 
 
             modelBuilder.Entity<Restaurant>(e =>

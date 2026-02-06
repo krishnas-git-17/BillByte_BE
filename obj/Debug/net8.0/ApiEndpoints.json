@@ -148,6 +148,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "BillByte.Controllers.AuthController",
+    "Method": "VerifyEmail",
+    "RelativePath": "api/auth/verify-email",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "BillByte.DTO.VerifyEmailDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CompletedOrdersController",
     "Method": "SaveOrder",
     "RelativePath": "api/completed-orders",
@@ -350,6 +366,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Billbyte_BE.Controllers.PlansController",
+    "Method": "GetPlans",
+    "RelativePath": "api/plans",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
